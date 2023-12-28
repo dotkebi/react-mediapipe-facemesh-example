@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 
 import {
+  Category,
   DrawingUtils,
   FaceLandmarker,
   FaceLandmarkerResult,
@@ -16,9 +17,9 @@ const FaceContainer = () => {
   const inputVideoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const descriptionRef = useRef<HTMLUListElement | null>(null);
 
 
-  let lastVideoTime = -1;
   const [face, setFace] = useState<FaceLandmarker | null>();
 
   const sendToMediaPipe = async () => {
@@ -81,6 +82,30 @@ const FaceContainer = () => {
       });
     }
   }, [inputVideoReady]);
+
+  const drawBlendShapes = (blendShapes: any[]) => {
+    if (!blendShapes.length || !descriptionRef.current) {
+      return;
+    }
+
+    console.log(blendShapes[0]);
+
+    let htmlMaker = "";
+    blendShapes[0].categories.map((shape: Category) => {
+      htmlMaker += `
+      <li class="blend-shapes-item">
+        <span class="blend-shapes-label">${
+          shape.displayName || shape.categoryName
+      }</span>
+        <span class="blend-shapes-value" style="width: calc(${
+          +shape.score * 100
+      }% - 120px)">${(+shape.score).toFixed(4)}</span>
+      </li>
+    `;
+    });
+
+    descriptionRef.current.innerHTML = htmlMaker;
+  }
 
   const onResults = (results: FaceLandmarkerResult) => {
     if (canvasRef.current && contextRef.current) {
@@ -146,26 +171,30 @@ const FaceContainer = () => {
       }
       contextRef.current.restore();
     }
+
+    drawBlendShapes(results.faceBlendshapes || []);
   }
 
-
   return (
-      <div className="face-container">
-        <video
-            autoPlay
-            ref={(el) => {
-              inputVideoRef.current = el;
-              setInputVideoReady(!!el);
-            }}
-        />
-        <canvas ref={canvasRef} width={1280} height={720}/>
-        {!loaded && (
-            <div className="loading">
-              <div className="spinner"></div>
-              <div className="message">Loading</div>
-            </div>
-        )}
-      </div>
+      <>
+        <div className="face-container">
+          <video
+              autoPlay
+              ref={(el) => {
+                inputVideoRef.current = el;
+                setInputVideoReady(!!el);
+              }}
+          />
+          <canvas ref={canvasRef} width={1280} height={720}/>
+          {!loaded && (
+              <div className="loading">
+                <div className="spinner"></div>
+                <div className="message">Loading</div>
+              </div>
+          )}
+        </div>
+        <ul ref={descriptionRef} className='desc'></ul>
+      </>
   );
 };
 

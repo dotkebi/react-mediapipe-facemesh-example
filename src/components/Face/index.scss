@@ -1,4 +1,4 @@
-.hands-container {
+.face-container {
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -18,12 +18,11 @@
   top: 0;
   transform-origin: 0px 0px;
   overflow: hidden;
-  background-color: #596e73;
   width: 100%;
   max-height: 100%;
 
   video {
-    display: none;
+    //display: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -36,17 +35,12 @@
   }
 
   canvas {
-    width: 100%;
-    display: block;
-    position: relative;
-    left: 0;
-    top: 0;
-  }
-
-  .control-panel {
+    width: 1280px;
     position: absolute;
-    left: 10px;
-    top: 10px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   .loading {
@@ -77,21 +71,10 @@
     }
   }
 
-  .square-box {
-    width: 33%;
-    height: 0;
-    padding-top: 33%;
-    position: absolute;
-    right: 20px;
-    top: 20px;
-  }
 
-  .landmark-grid-container {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #99999999;
-  }
+}
+
+.desc {
+  position: fixed;
+  display: block;
 }
